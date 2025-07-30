@@ -23,6 +23,8 @@
 
 [2.1 Жизненный цикл компонентов](#жизненный-цикл-компонентов)
 
+[2.2 Hooks](#hooks)
+
 ## Основы JavaScript
 
 ### Типы данных
@@ -359,3 +361,63 @@ __После React 16.3 (с хуками)__
 - componentDidUpdate → useEffect(() => {}, [deps]).
 
 - componentWillUnmount → useEffect(() => { return () => {} }, []).
+
+### Hooks
+
+Основные хуки
+
+useState:
+
+```
+const [count, setCount] = useState(0);
+setCount(prev => prev + 1); // Функциональное обновление
+```
+
+useEffect:
+
+- Без зависимостей: выполняется при каждом рендере.
+
+- Пустой массив: аналог componentDidMount.
+
+- С зависимостями: аналог componentDidUpdate.
+
+```
+useEffect(() => {
+  const subscription = props.source.subscribe();
+  return () => subscription.unsubscribe(); // cleanup
+}, [props.source]);
+```
+
+useMemo и useCallback:
+
+__useMemo__ – кеширует значение:
+
+```
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+__useCallback__ – кеширует функцию:
+
+```
+const memoizedCallback = useCallback(() => doSomething(a, b), [a, b]);
+```
+
+Правила хуков
+
+- Не вызывать хуки в условиях/циклах (порядок вызова должен быть одинаковым).
+
+- Использовать только в функциональных компонентах (или кастомных хуках).
+
+__Пример кастомного хука:__
+
+```
+function useWindowSize() {
+  const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  useEffect(() => {
+    const handleResize = () => setSize({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return size;
+}
+```
