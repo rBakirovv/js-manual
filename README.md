@@ -12,7 +12,7 @@
 
 __Примитивы vs Объекты__
 
-Примитивы: number, string, boolean, null, undefined, symbol, bigint.
+__Примитивы:__ number, string, boolean, null, undefined, symbol, bigint.
 
 Особенности:
 
@@ -22,7 +22,7 @@ __Примитивы vs Объекты__
 
 - typeof null === 'object' (исторический баг).
 
-Объекты: Object, Array, Function, Date, RegExp и др.
+__Объекты:__ Object, Array, Function, Date, RegExp и др.
 
 Особенности:
 
