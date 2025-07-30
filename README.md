@@ -16,6 +16,8 @@
 
 [1.6 Асинхронность](#асинхронность)
 
+[1.7 Map, Set, WeakMap, WeakSet](#map-set-weakmap-weakset)
+
 ## Основы JavaScript
 
 ### Типы данных
@@ -297,3 +299,6 @@ __Promise, async/await__
 - async функция всегда возвращает Promise.
 
 - await – ждёт разрешения Promise (блокирует только текущий контекст).
+
+### Map, Set, WeakMap, WeakSet
+
