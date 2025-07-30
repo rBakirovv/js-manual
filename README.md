@@ -18,6 +18,9 @@
 
 [1.7 Map, Set, WeakMap, WeakSet](#map-set-weakmap-weakset)
 
+
+[2 React](#react)
+
 ## Основы JavaScript
 
 ### Типы данных
