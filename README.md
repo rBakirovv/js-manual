@@ -57,3 +57,30 @@ console.log(a.name); // 'Bob' (изменение по ссылке)
 Object.prototype.toString.call([]) // "[object Array]"
 Object.prototype.toString.call(null) // "[object Null]"
 ```
+
+### Сравнение значений
+
+__== vs ===__
+
+== – нестрогое сравнение (с приведением типов).
+
+=== – строгое сравнение (без приведения).
+
+Опасные случаи:
+
+```
+'' == '0'          // false
+0 == ''            // true ('' → 0)
+false == 'false'   // false (true == 'false' → false)
+null == undefined  // true (но null === undefined → false)
+```
+
+__Совет:__ Всегда используй ===, если нет явной причины для ==.
+
+Object.is()
+Аналог ===, но с отличиями:
+
+```
+Object.is(NaN, NaN)   // true (в отличие от NaN === NaN → false)
+Object.is(0, -0)      // false (0 === -0 → true)
+```
