@@ -282,11 +282,11 @@ __Особенности прототипного наследования:__
 
 ### Асинхронность
 
-__Event Loop__
+__Event Loop (цикл событий) — это механизм, который позволяет JavaScript обрабатывать асинхронные операции, несмотря на то, что язык является однопоточным. Он отвечает за порядок выполнения кода, обработку колбэков и взаимодействие с Web APIs__
 
 - Call Stack – выполняет синхронный код.
 
-- Web APIs – setTimeout, fetch, DOM events.
+- Web APIs (Окружение браузера/Node.js) – setTimeout, fetch, DOM events.
 
 - Callback Queue (Macrotask) – setTimeout, setInterval.
 
@@ -298,7 +298,9 @@ __Порядок выполнения:__
 
 2. Микрозадачи (полностью очищаются).
 
-3. Макрозадача (одна задача).
+3. Рендеринг (если браузеру нужно перерисовать страницу)
+
+4. Макрозадача (одна задача).
 
 __Promise, async/await__
 
@@ -307,6 +309,75 @@ __Promise, async/await__
 - async функция всегда возвращает Promise.
 
 - await – ждёт разрешения Promise (блокирует только текущий контекст).
+
+Промисы (Promise) в JavaScript могут находиться в одном из трех состояний:
+
+__Pending (Ожидание)__
+
+- Начальное состояние промиса
+
+- Промис еще не выполнен и не отклонен
+
+- Переходит либо в fulfilled, либо в rejected
+
+```
+const pendingPromise = new Promise((resolve, reject) => {
+  // Промис находится в состоянии pending
+  // пока не будет вызван resolve или reject
+});
+```
+
+__Fulfilled (Выполнен успешно)__
+
+- Промис успешно завершил свою операцию
+
+- Был вызван метод resolve()
+
+- Цепочка продолжается через .then()
+
+```
+const fulfilledPromise = Promise.resolve('Успех!');
+// или
+new Promise((resolve) => resolve('Успех!'));
+```
+
+__Rejected (Отклонен)__
+
+- Промис завершился с ошибкой
+
+- Был вызван метод reject()
+
+- Обрабатывается через .catch() или второй аргумент .then()
+
+```
+const rejectedPromise = Promise.reject(new Error('Ошибка!'));
+// или
+new Promise((resolve, reject) => reject(new Error('Ошибка!')));
+```
+
+Особенности состояний:
+
+- Состояние неизменно - промис может перейти из pending только в fulfilled или rejected, и после этого его состояние больше не меняется.
+
+- Обработка состояний:
+
+```
+const examplePromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    Math.random() > 0.5 ? resolve('Успех') : reject('Ошибка');
+  }, 1000);
+});
+
+examplePromise
+  .then(result => console.log('Успех:', result))
+  .catch(error => console.log('Ошибка:', error));
+```
+
+Методы проверки состояния:
+
+- Прямого способа проверить состояние промиса нет
+
+- Можно использовать .then(), .catch() или Promise.race() для косвенной проверки
 
 ### Map, Set, WeakMap, WeakSet
 
