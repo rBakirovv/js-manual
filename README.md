@@ -28,6 +28,10 @@
 
 [2.2 Hooks](#hooks)
 
+[2.3 Управление состоянием](#управление-состоянием)
+
+[2.4 SSR](#ssr)
+
 ## ООП
 
 __1. Инкапсуляция__
@@ -725,3 +729,108 @@ function useWindowSize() {
   return size;
 }
 ```
+
+### Управление состоянием
+
+React предоставляет различные способы управления состоянием приложения — от локального состояния компонентов до глобальных стейт-менеджеров.
+
+__Локальное состояние (Local State)__ - useState, базовый хук для управления состоянием внутри компонента.
+
+__Контекст (Context API)__
+
+Позволяет передавать данные через дерево компонентов без пропсов:
+
+```
+import { createContext, useContext } from 'react';
+
+const ThemeContext = createContext('light');
+
+function App() {
+  return (
+    <ThemeContext.Provider value="dark">
+      <Toolbar />
+    </ThemeContext.Provider>
+  );
+}
+
+function Toolbar() {
+  const theme = useContext(ThemeContext);
+  return <div>Тема: {theme}</div>;
+}
+```
+
+Проблемы:
+
+- Не оптимизирован для частых обновлений
+
+- Перерисовывает всех потребителей при изменении контекста
+
+Когда использовать:
+
+- Тема, локализация, редко меняющиеся данные
+
+__Redux и Redux Toolkit (RTK)__
+
+Redux (классический)
+
+Архитектура Flux + иммутабельные обновления:
+
+```
+// Action
+const increment = () => ({ type: 'INCREMENT' });
+
+// Reducer
+function counter(state = 0, action) {
+  switch (action.type) {
+    case 'INCREMENT': return state + 1;
+    default: return state;
+  }
+}
+
+// Store
+const store = createStore(counter);
+store.dispatch(increment());
+```
+
+Проблемы классического Redux:
+
+- Много шаблонного кода
+
+- Сложная настройка асинхронных операций
+
+__Redux Toolkit (RTK) — современный подход__
+
+Упрощает Redux с помощью createSlice и configureStore:
+
+```
+import { createSlice, configureStore } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: 0,
+  reducers: {
+    increment: state => state + 1,
+    decrement: state => state - 1
+  }
+});
+
+const store = configureStore({
+  reducer: counterSlice.reducer
+});
+
+store.dispatch(counterSlice.actions.increment());
+```
+
+Плюсы RTK:
+
+- Автоматически генерирует экшены
+
+- Встроенный Immer для мутабельного-looking кода
+
+- Интеграция с RTK Query для API-запросов
+
+Когда использовать:
+
+- Крупные приложения с сложным стейтом
+
+- Когда нужен предсказуемый стейт-менеджмент
