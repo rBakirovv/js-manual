@@ -2,6 +2,8 @@
 
 ## Содержание
 
+[0. ООП](#ооп)
+
 [1. Основы JavaScript](#основы-javascript)
 
 [1.1 Типы данных](#типы-данных)
@@ -25,6 +27,118 @@
 [2.1 Жизненный цикл компонентов](#жизненный-цикл-компонентов)
 
 [2.2 Hooks](#hooks)
+
+## ООП
+
+__1. Инкапсуляция__
+
+Сокрытие внутренней реализации и предоставление безопасного интерфейса.
+
+В JavaScript реализуется через:
+
+- Закрытые свойства (с # в ES2022+ или через замыкания)
+
+- Геттеры/сеттеры (get/set)
+
+```
+class BankAccount {
+  #balance = 0; // Приватное поле
+
+  // Публичный интерфейс
+  deposit(amount) {
+    this.#balance += amount;
+  }
+
+  get balance() {
+    return this.#balance;
+  }
+}
+
+const account = new BankAccount();
+account.deposit(100);
+console.log(account.balance); // 100
+// account.#balance; // Ошибка! Нельзя обратиться напрямую
+```
+
+__2. Наследование__
+
+Создание дочерних классов на основе родительских.
+
+В JavaScript работает через:
+
+- Прототипы (в классическом JS)
+
+- Ключевое слово extends (в ES6+)
+
+```
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    console.log(`${this.name} издаёт звук.`);
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    console.log(`${this.name} лает!`); // Переопределение метода
+  }
+}
+
+const dog = new Dog("Шарик");
+dog.speak(); // "Шарик лает!"
+```
+
+__3. Полиморфизм__
+
+Разные объекты могут использовать методы с одинаковыми именами.
+
+```
+class Cat extends Animal {
+  speak() {
+    console.log(`${this.name} мяукает!`);
+  }
+}
+
+const animals = [new Dog("Бобик"), new Cat("Мурка")];
+animals.forEach(animal => animal.speak());
+// "Бобик лает!"
+// "Мурка мяукает!"
+```
+
+__4. Абстракция__
+
+Упрощение сложной реальности через выделение ключевых характеристик.
+
+```
+class Shape {
+  constructor() {
+    if (new.target === Shape) {
+      throw new Error("Shape — абстрактный класс!");
+    }
+  }
+
+  calculateArea() {
+    throw new Error("Метод должен быть переопределён!");
+  }
+}
+
+class Circle extends Shape {
+  constructor(radius) {
+    super();
+    this.radius = radius;
+  }
+
+  calculateArea() {
+    return Math.PI * this.radius ** 2;
+  }
+}
+
+const circle = new Circle(5);
+console.log(circle.calculateArea()); // 78.5398..
+```
 
 ## Основы JavaScript
 
