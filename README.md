@@ -534,16 +534,18 @@ __После React 16.3 (с хуками)__
 
 ### Hooks
 
-Основные хуки
+Хуки — это специальные функции в React, которые позволяют использовать состояние (state) и другие возможности React без написания классовых компонентов.
 
-useState:
+__Основные хуки__
+
+__useState:__
 
 ```
 const [count, setCount] = useState(0);
 setCount(prev => prev + 1); // Функциональное обновление
 ```
 
-useEffect:
+__useEffect:__
 
 - Без зависимостей: выполняется при каждом рендере.
 
@@ -558,7 +560,7 @@ useEffect(() => {
 }, [props.source]);
 ```
 
-useMemo и useCallback:
+__useMemo и useCallback:__
 
 __useMemo__ – кеширует значение:
 
@@ -570,6 +572,24 @@ __useCallback__ – кеширует функцию:
 
 ```
 const memoizedCallback = useCallback(() => doSomething(a, b), [a, b]);
+```
+
+__useRef__ — хук для ссылок и изменяемых значений
+
+Позволяет сохранять mutable-значение между рендерами без перерисовки.
+
+```
+import { useRef, useEffect } from 'react';
+
+function InputFocus() {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus(); // Установка фокуса при монтировании
+  }, []);
+
+  return <input ref={inputRef} type="text" />;
+}
 ```
 
 Правила хуков
