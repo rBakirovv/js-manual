@@ -834,3 +834,51 @@ store.dispatch(counterSlice.actions.increment());
 - Крупные приложения с сложным стейтом
 
 - Когда нужен предсказуемый стейт-менеджмент
+
+__MobX__
+
+Реактивное управление состоянием через наблюдаемые объекты:
+
+```
+import { makeAutoObservable } from 'mobx';
+
+class CounterStore {
+  count = 0;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
+
+  increment() {
+    this.count++;
+  }
+}
+
+const store = new CounterStore();
+```
+
+Использование в React (с observer):
+
+```
+import { observer } from 'mobx-react-lite';
+
+const Counter = observer(({ store }) => (
+  <button onClick={() => store.increment()}>
+    {store.count}
+  </button>
+));
+```
+
+Плюсы:
+
+- Минимум шаблонного кода
+
+- Автоматическая реактивность
+
+- Не требует редьюсеров/экшенов
+
+Когда использовать:
+
+- Быстрое прототипирование
+
+- Приложения с сложными реактивными зависимостями
