@@ -882,3 +882,97 @@ const Counter = observer(({ store }) => (
 - Быстрое прототипирование
 
 - Приложения с сложными реактивными зависимостями
+
+### SSR
+
+__Next.js__ — это React-фреймворк с расширенными возможностями, включая серверный рендеринг (SSR), статическую генерацию (SSG) и гибридные подходы.
+
+SSR — это процесс рендеринга React-приложения на сервере и отправки готового HTML клиенту.
+
+Проблемы, которые решает SSR:
+
+- SEO: Поисковые системы плохо индексируют чистый клиентский JS (например, в CRA).
+
+- Производительность: Быстрая первая загрузка страницы (особенно на слабых устройствах).
+
+- Социальные сети: Корректное отображение превью при расшаривании (OpenGraph, Twitter Cards).
+
+__Реализация SSR в Next.js__
+
+__getServerSideProps (основной метод SSR)__
+
+Функция, которая выполняется на сервере при каждом запросе и передает данные в компонент.
+
+```
+// pages/post/[id].js
+export async function getServerSideProps(context) {
+  // Параметры из URL (/post/123 → context.params.id = '123')
+  const { id } = context.params;
+  
+  // Запрос к API или БД
+  const res = await fetch(`https://api.example.com/posts/${id}`);
+  const post = await res.json();
+
+  // Возвращаем данные как props для страницы
+  return { 
+    props: { post } 
+  };
+}
+
+function PostPage({ post }) { // Данные приходят из getServerSideProps
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+    </article>
+  );
+}
+```
+
+Особенности:
+
+- Выполняется только на сервере (код не попадает в клиентский бандл).
+
+- Имеет доступ к req (запрос) и res (ответ) из Node.js.
+
+- Подходит для данных, которые часто меняются (лента новостей, пользовательский контент).
+
+__SSR + API Routes__
+
+Next.js позволяет создавать API endpoints прямо в проекте:
+
+```
+// pages/api/post.js
+export default function handler(req, res) {
+  const { id } = req.query;
+  // Здесь можно подключиться к БД
+  res.status(200).json({ id, title: 'Статья о Next.js' });
+}
+```
+
+Использование в getServerSideProps:
+
+```
+export async function getServerSideProps(context) {
+  const { id } = context.params;
+  const res = await fetch(`http://localhost:3000/api/post?id=${id}`);
+  const post = await res.json();
+  return { props: { post } };
+}
+```
+
+__Минусы SSR:__
+
+- Медленный TTFB (Time To First Byte) — сервер тратит время на рендеринг.
+
+- Нагрузка на сервер — каждый запрос требует вычислений.
+
+- Сложнее кэшировать чем SSG.
+
+__Идеальные сценарии для SSR:__
+
+- Личные кабинеты (данные индивидуальны для каждого пользователя)
+
+- Новостные ленты (частые обновления)
+
+- Страницы с динамическими мета-тегами (соц. сети)
