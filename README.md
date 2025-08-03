@@ -40,6 +40,8 @@
 
 [3.3 Декораторы](#декораторы)
 
+[4. Паттерны проектирования](#паттерны-проектирования)
+
 [Полезные материалы](#полезные-материалы)
 
 ## ООП
@@ -1165,6 +1167,155 @@ class Post {
 - Зависимости (в Angular, NestJS)
 
 - Мемоизация (кеширование результатов методов)
+
+## Паттерны проектирования
+
+__Creational (Порождающие)__
+
+Решают проблему: Как создавать объекты?
+
+__Singleton (Одиночка):__
+
+```
+class Database {
+  private static instance: Database;
+  private constructor() {}
+  static getInstance() {
+    if (!Database.instance) Database.instance = new Database();
+    return Database.instance;
+  }
+}
+```
+
+Использование: Логгеры, подключения к БД.
+
+__Factory (Фабрика):__
+
+```
+interface Product {}
+class ConcreteProductA implements Product {}
+class ProductFactory {
+  createProduct(type: string): Product {
+    if (type === "A") return new ConcreteProductA();
+    throw new Error("Неизвестный тип");
+  }
+}
+```
+
+Использование: Создание сложных объектов (UI-компоненты, API-клиенты).
+
+__Builder (Строитель):__
+
+```
+class Pizza {
+  constructor(public size: number, public cheese: boolean) {}
+}
+class PizzaBuilder {
+  private size = 12;
+  private cheese = false;
+  setSize(size: number) { this.size = size; return this; }
+  addCheese() { this.cheese = true; return this; }
+  build() { return new Pizza(this.size, this.cheese); }
+}
+const pizza = new PizzaBuilder().setSize(16).addCheese().build();
+```
+
+Использование: Постепенное конструирование объектов (например, запросы к API).
+
+__Structural (Структурные)__
+
+Решают проблему: Как организовать классы и объекты?
+
+__Adapter (Адаптер):__
+
+```
+class OldService {
+  requestOld() { return "Старые данные"; }
+}
+interface NewService { requestNew(): string; }
+class Adapter implements NewService {
+  constructor(private oldService: OldService) {}
+  requestNew() { return this.oldService.requestOld(); }
+}
+```
+
+Использование: Интеграция старых систем с новыми интерфейсами.
+
+__Decorator (Декоратор):__
+
+```
+interface Coffee { cost(): number; }
+class SimpleCoffee implements Coffee { cost() { return 10; } }
+class MilkDecorator implements Coffee {
+  constructor(private coffee: Coffee) {}
+  cost() { return this.coffee.cost() + 2; }
+}
+const coffee = new MilkDecorator(new SimpleCoffee());
+```
+
+Использование: Добавление функциональности без изменения класса (middleware, кеширование).
+
+__Facade (Фасад):__
+
+```
+class CPU { start() {} }
+class Memory { load() {} }
+class Computer {
+  private cpu = new CPU();
+  private memory = new Memory();
+  start() { this.cpu.start(); this.memory.load(); }
+}
+```
+
+Использование: Упрощение сложных систем (например, API-клиенты).
+
+__Behavioral (Поведенческие)__
+
+Решают проблему: Как объекты взаимодействуют?
+
+__Observer (Наблюдатель):__
+
+```
+interface Observer { update(data: any): void; }
+class Subject {
+  private observers: Observer[] = [];
+  addObserver(observer: Observer) { this.observers.push(observer); }
+  notify(data: any) { this.observers.forEach(obs => obs.update(data)); }
+}
+```
+
+Использование: Событийные системы (React, Vue).
+
+__Strategy (Стратегия):__
+
+```
+interface PaymentStrategy { pay(amount: number): void; }
+class CreditCardStrategy implements PaymentStrategy {
+  pay(amount: number) { console.log(`Оплата картой: ${amount}`); }
+}
+class PaymentContext {
+  constructor(private strategy: PaymentStrategy) {}
+  execute(amount: number) { this.strategy.pay(amount); }
+}
+```
+
+Использование: Динамический выбор алгоритма (например, сортировка).
+
+__Command (Команда):__
+
+```
+interface Command { execute(): void; }
+class Light { turnOn() {} }
+class LightOnCommand implements Command {
+  constructor(private light: Light) {}
+  execute() { this.light.turnOn(); }
+}
+class RemoteControl {
+  submit(command: Command) { command.execute(); }
+}
+```
+
+Использование: Очереди задач, undo/redo.
 
 ## Полезные материалы
 
