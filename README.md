@@ -36,6 +36,10 @@
 
 [3.1 Типы и интерфейсы](#типы-и-интерфейсы)
 
+[3.2 Дженерики](#дженерики)
+
+[3.2 Декораторы](#декораторы)
+
 [Полезные материалы](#полезные-материалы)
 
 ## ООП
@@ -1028,6 +1032,139 @@ __Используйте типы (type), если:__
 __Интерфейсы лучше для ООП-стиля и расширяемости.__
 
 __Типы мощнее для сложных тип-трансформаций и композиции.__
+
+### Дженерики
+
+__Дженерики__ — это механизм для создания переиспользуемых компонентов, которые могут работать с разными типами данных, сохраняя типобезопасность.
+
+__Зачем нужны дженерики?__
+
+- Избегают дублирования кода для похожих операций с разными типами.
+
+- Обеспечивают типобезопасность без явного указания конкретных типов.
+
+Примеры использования:
+
+__Дженерик-функции__
+
+```
+function reverse<T>(items: T[]): T[] {
+  return items.reverse();
+}
+
+const numbers = reverse<number>([1, 2, 3]); // [3, 2, 1]
+const strings = reverse<string>(["a", "b", "c"]); // ["c", "b", "a"]
+```
+
+__Дженерик-классы__
+
+```
+class Box<T> {
+  private value: T;
+
+  constructor(value: T) {
+    this.value = value;
+  }
+
+  getValue(): T {
+    return this.value;
+  }
+}
+
+const numberBox = new Box<number>(42);
+const stringBox = new Box<string>("Hello"); 
+```
+
+### Декораторы
+
+__Декораторы__ — это функции, которые модифицируют поведение классов, методов, свойств или параметров. Они работают на этапе инициализации класса (не во время выполнения).
+
+Типы декораторов:
+
+__Декоратор класса__
+
+```
+function Logger(constructor: Function) {
+  console.log(`Создан класс: ${constructor.name}`);
+}
+
+@Logger
+class Person {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+// В консоли: "Создан класс: Person"
+```
+
+__Декоратор метода__
+
+```
+function Log(target: any, key: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+
+  descriptor.value = function (...args: any[]) {
+    console.log(`Вызов метода ${key} с аргументами: ${args}`);
+    return originalMethod.apply(this, args);
+  };
+
+  return descriptor;
+}
+
+class Calculator {
+  @Log
+  add(a: number, b: number) {
+    return a + b;
+  }
+}
+
+const calc = new Calculator();
+calc.add(2, 3); // Лог: "Вызов метода add с аргументами: 2,3"
+```
+
+__Декоратор свойства__
+
+```
+function DefaultValue(value: string) {
+  return function (target: any, key: string) {
+    target[key] = value;
+  };
+}
+
+class Book {
+  @DefaultValue("Untitled")
+  title: string;
+}
+
+const book = new Book();
+console.log(book.title); // "Untitled"
+```
+
+__Декоратор параметра__
+
+```
+function Validate(target: any, key: string, index: number) {
+  // Можно добавить валидацию параметров
+}
+
+class Post {
+  publish(@Validate title: string) {
+    // ...
+  }
+}
+```
+
+Практическое применение декораторов:
+
+- Логирование (автоматическое логирование вызовов методов)
+
+- Валидация (проверка параметров методов)
+
+- Зависимости (в Angular, NestJS)
+
+- Мемоизация (кеширование результатов методов)
 
 ## Полезные материалы
 
